@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{2EBB9871-315F-4219-84C8-C02BD23C01E5}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="GestaoEnderecoServer\GestaoEnderecoServer.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="GestaoEnderecoApp\GestaoEnderecoApp.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="GestaoEnderecoServer">
+        <MSBuild Projects="GestaoEnderecoServer\GestaoEnderecoServer.dproj"/>
+    </Target>
+    <Target Name="GestaoEnderecoServer:Clean">
+        <MSBuild Projects="GestaoEnderecoServer\GestaoEnderecoServer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="GestaoEnderecoServer:Make">
+        <MSBuild Projects="GestaoEnderecoServer\GestaoEnderecoServer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="GestaoEnderecoApp">
+        <MSBuild Projects="GestaoEnderecoApp\GestaoEnderecoApp.dproj"/>
+    </Target>
+    <Target Name="GestaoEnderecoApp:Clean">
+        <MSBuild Projects="GestaoEnderecoApp\GestaoEnderecoApp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="GestaoEnderecoApp:Make">
+        <MSBuild Projects="GestaoEnderecoApp\GestaoEnderecoApp.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="GestaoEnderecoServer;GestaoEnderecoApp"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="GestaoEnderecoServer:Clean;GestaoEnderecoApp:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="GestaoEnderecoServer:Make;GestaoEnderecoApp:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

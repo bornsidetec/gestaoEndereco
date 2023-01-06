@@ -1,0 +1,142 @@
+[
+  {
+    "flnatureza": "1",
+    "dsdocumento": "A",
+    "nmprimeiro": "Miguel",
+    "nmsegundo": "Sophia",
+    "dscep": "15015700"
+  },
+  {
+    "flnatureza": "2",
+    "dsdocumento": "B",
+    "nmprimeiro": "Davi",
+    "nmsegundo": "Alice",
+    "dscep": "15015000"
+  },
+  {
+    "flnatureza": "3",
+    "dsdocumento": "C",
+    "nmprimeiro": "Arthur",
+    "nmsegundo": "Julia",
+    "dscep": "15061007"
+  },
+  {
+    "flnatureza": "4",
+    "dsdocumento": "D",
+    "nmprimeiro": "Pedro",
+    "nmsegundo": "Isabella",
+    "dscep": "15010021"
+  },
+  {
+    "flnatureza": "5",
+    "dsdocumento": "E",
+    "nmprimeiro": "Gabriel",
+    "nmsegundo": "Manuela",
+    "dscep": "15061005"
+  },
+  {
+    "flnatureza": "6",
+    "dsdocumento": "F",
+    "nmprimeiro": "Bernardo",
+    "nmsegundo": "Laura",
+    "dscep": "15015605"
+  },
+  {
+    "flnatureza": "7",
+    "dsdocumento": "G",
+    "nmprimeiro": "Lucas",
+    "nmsegundo": "Luiza",
+    "dscep": "15010011"
+  },
+  {
+    "flnatureza": "8",
+    "dsdocumento": "H",
+    "nmprimeiro": "Matheus",
+    "nmsegundo": "Valentina",
+    "dscep": "15010075"
+  },
+  {
+    "flnatureza": "9",
+    "dsdocumento": "I",
+    "nmprimeiro": "Rafael",
+    "nmsegundo": "Giovanna",
+    "dscep": "15010045"
+  },
+  {
+    "flnatureza": "10",
+    "dsdocumento": "J",
+    "nmprimeiro": "Heitor",
+    "nmsegundo": "Maria Eduarda",
+    "dscep": "15010211"
+  },
+  {
+    "flnatureza": "11",
+    "dsdocumento": "K",
+    "nmprimeiro": "Enzo",
+    "nmsegundo": "Helena",
+    "dscep": "15015100"
+  },
+  {
+    "flnatureza": "12",
+    "dsdocumento": "L",
+    "nmprimeiro": "Guilherme",
+    "nmsegundo": "Beatriz",
+    "dscep": "15015300"
+  },
+  {
+    "flnatureza": "13",
+    "dsdocumento": "M",
+    "nmprimeiro": "Nicolas",
+    "nmsegundo": "Maria Luiza",
+    "dscep": "15015500"
+  },
+  {
+    "flnatureza": "14",
+    "dsdocumento": "N",
+    "nmprimeiro": "Lorenzo",
+    "nmsegundo": "Lara",
+    "dscep": "15010080"
+  },
+  {
+    "flnatureza": "15",
+    "dsdocumento": "O",
+    "nmprimeiro": "Gustavo",
+    "nmsegundo": "Mariana",
+    "dscep": "15015400"
+  },
+  {
+    "flnatureza": "16",
+    "dsdocumento": "P",
+    "nmprimeiro": "Felipe",
+    "nmsegundo": "Nicole",
+    "dscep": "15010110"
+  },
+  {
+    "flnatureza": "17",
+    "dsdocumento": "Q",
+    "nmprimeiro": "Samuel",
+    "nmsegundo": "Rafaela",
+    "dscep": "15061010"
+  },
+  {
+    "flnatureza": "18",
+    "dsdocumento": "R",
+    "nmprimeiro": "João Pedro",
+    "nmsegundo": "Heloísa",
+    "dscep": "15010050"
+  },
+  {
+    "flnatureza": "19",
+    "dsdocumento": "S",
+    "nmprimeiro": "Daniel",
+    "nmsegundo": "Isadora",
+    "dscep": "15010070"
+  },
+  {
+    "flnatureza": "20",
+    "dsdocumento": "T",
+    "nmprimeiro": "Vitor",
+    "nmsegundo": "Lívia",
+    "dscep": "15010010"
+  }
+]
