@@ -4,7 +4,7 @@ object fGuiServer: TfGuiServer
   BorderStyle = bsToolWindow
   Caption = 'Interface Gr'#225'fica do Usu'#225'rio - Server'
   ClientHeight = 100
-  ClientWidth = 311
+  ClientWidth = 339
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object fGuiServer: TfGuiServer
     Caption = 'Port'
   end
   object ButtonStart: TButton
-    Left = 144
+    Left = 175
     Top = 25
     Width = 75
     Height = 25
@@ -30,7 +30,7 @@ object fGuiServer: TfGuiServer
     OnClick = ButtonStartClick
   end
   object ButtonStop: TButton
-    Left = 225
+    Left = 256
     Top = 25
     Width = 75
     Height = 25
@@ -41,7 +41,7 @@ object fGuiServer: TfGuiServer
   object EditPort: TEdit
     Left = 8
     Top = 27
-    Width = 121
+    Width = 153
     Height = 21
     TabOrder = 2
     Text = '8080'
@@ -49,14 +49,17 @@ object fGuiServer: TfGuiServer
   object StatusBar: TStatusBar
     Left = 0
     Top = 81
-    Width = 311
+    Width = 339
     Height = 19
     Panels = <
       item
-        Width = 150
+        Width = 100
       end
       item
-        Width = 200
+        Width = 100
+      end
+      item
+        Width = 100
       end>
     ExplicitTop = 69
     ExplicitWidth = 303

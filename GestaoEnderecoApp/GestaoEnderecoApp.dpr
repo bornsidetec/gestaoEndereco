@@ -12,9 +12,7 @@ uses
   hComboBox in 'helper\hComboBox.pas',
   hEdit in 'helper\hEdit.pas' {$R *.res},
   vPessoas in 'view\vPessoas.pas' {fPessoas},
-  vPesoasLote in 'view\vPesoasLote.pas' {fPessoasLote},
-  dEndereco in 'dao\dEndereco.pas' {dmEndereco: TDataModule},
-  cEndereco in 'methods\cEndereco.pas';
+  vPesoasLote in 'view\vPesoasLote.pas' {fPessoasLote};
 
 {$R *.res}
 

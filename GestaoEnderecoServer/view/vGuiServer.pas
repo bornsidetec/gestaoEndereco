@@ -23,8 +23,14 @@ type
     procedure ButtonOpenBrowserClick(Sender: TObject);
   private
     FServer: TIdHTTPWebBrokerBridge;
+    threadCep: TThread;
     procedure StartServer;
     procedure CaminhoBD(bStart: Boolean);
+    procedure AtualizaCep;
+    procedure UpdateCep;
+    procedure Executar(iTempo: Integer);
+    procedure Parar;
+    procedure Excecao(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }
@@ -32,6 +38,7 @@ type
 
 var
   fGuiServer: TfGuiServer;
+  sTempo: string;
 
 implementation
 
@@ -42,13 +49,19 @@ uses
   WinApi.Windows, Winapi.ShellApi,
 {$ENDIF}
   Datasnap.DSSession,
-  System.Generics.Collections, dConexao;
+  System.Generics.Collections,
+  dEndereco;
 
 procedure TfGuiServer.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
 begin
   ButtonStart.Enabled := not FServer.Active;
   ButtonStop.Enabled := FServer.Active;
   EditPort.Enabled := not FServer.Active;
+end;
+
+procedure TfGuiServer.AtualizaCep;
+begin
+  Executar(StrToIntDef(sTempo, 0));
 end;
 
 procedure TfGuiServer.ButtonOpenBrowserClick(Sender: TObject);
@@ -68,11 +81,9 @@ end;
 
 procedure TfGuiServer.ButtonStartClick(Sender: TObject);
 begin
-  if not dmConexao.Conexao.Connected then
-    Application.Terminate;
-
   StartServer;
   CaminhoBD(True);
+  AtualizaCep;
 end;
 
 procedure TerminateThreads;
@@ -87,6 +98,7 @@ begin
   FServer.Active := False;
   FServer.Bindings.Clear;
   CaminhoBD(False);
+  Parar;
 end;
 
 procedure TfGuiServer.CaminhoBD(bStart: Boolean);
@@ -102,6 +114,7 @@ begin
       slAcesso.LoadFromFile('acesso.config');
       StatusBar.Panels[0].Text := slAcesso[4];
       StatusBar.Panels[1].Text := slAcesso[2];
+      sTempo := slAcesso[6]
     finally
       FreeAndNil(slAcesso);
     end;
@@ -115,9 +128,49 @@ begin
 
 end;
 
+procedure TfGuiServer.Excecao(Sender: TObject);
+begin
+  if Assigned(TThread(Sender).FatalException) then
+    showmessage(Exception(TThread(Sender).FatalException).Message);
+end;
+
+procedure TfGuiServer.Executar(iTempo: Integer);
+begin
+
+  threadCep := TThread.CreateAnonymousThread(
+    procedure
+    begin
+
+      while True do
+      begin
+        Sleep(iTempo * 1000);
+        UpdateCep;
+
+        TThread.Synchronize(nil,
+          procedure
+          begin
+            StatusBar.Panels[2].Text := 'Cep: ' + FormatDateTime('dd/MM/yyyy hh:nn:ss', now);
+          end);
+
+      end;
+    end
+  );
+
+  threadCep.FreeOnTerminate := True;
+  threadCep.OnTerminate := Excecao;
+  threadCep.Start;
+
+end;
+
 procedure TfGuiServer.FormCreate(Sender: TObject);
 begin
   FServer := TIdHTTPWebBrokerBridge.Create(Self);
+end;
+
+procedure TfGuiServer.Parar;
+begin
+  if Assigned(threadCep) then
+    threadCep.Terminate;
 end;
 
 procedure TfGuiServer.StartServer;
@@ -128,6 +181,37 @@ begin
     FServer.DefaultPort := StrToInt(EditPort.Text);
     FServer.Active := True;
   end;
+end;
+
+procedure TfGuiServer.UpdateCep;
+var
+  dmEndereco: TdmEndereco;
+  sMsg: string;
+  iId: integer;
+  sCep: string;
+begin
+
+  dmEndereco := TdmEndereco.Create(nil);
+
+  try
+
+    dmEndereco.SetaConexao;
+    dmEndereco.CarregarEnderecosSemIntegracao;
+
+    while not dmEndereco.qryEndereco.Eof do
+    begin
+
+      iId := dmEndereco.qryEndereco.FieldByName('idendereco').AsInteger;
+      sCep := dmEndereco.qryEndereco.FieldByName('dscep').AsString;
+
+      dmEndereco.AtualizarEndereco(iId, sCep, sMsg);
+      dmEndereco.qryEndereco.Next;
+    end;
+
+  finally
+    FreeAndNil(dmEndereco);
+  end;
+
 end;
 
 end.

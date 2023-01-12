@@ -138,12 +138,6 @@
             <Form>fPessoasLote</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="dao\dEndereco.pas">
-            <Form>dmEndereco</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="methods\cEndereco.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1003,9 +997,7 @@
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
             </Platforms>
-            <DataSnapProxyLookup>
-                <cEndereco>{6EBF1B6C-215E-41A3-8265-1BE124FDDA5B}</cEndereco>
-            </DataSnapProxyLookup>
+            <DataSnapProxyLookup/>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>

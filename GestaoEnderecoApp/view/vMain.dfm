@@ -30,99 +30,6 @@ object fMain: TfMain
     ExplicitTop = 563
     ExplicitWidth = 829
   end
-  object pnlEnderecos: TPanel
-    Left = 0
-    Top = 0
-    Width = 833
-    Height = 564
-    Align = alClient
-    TabOrder = 1
-    Visible = False
-    ExplicitLeft = 384
-    ExplicitTop = 248
-    ExplicitWidth = 185
-    ExplicitHeight = 41
-    object pnlDados: TPanel
-      Left = 1
-      Top = 46
-      Width = 831
-      Height = 472
-      Align = alClient
-      TabOrder = 0
-      ExplicitLeft = 0
-      ExplicitTop = 45
-      ExplicitWidth = 528
-      ExplicitHeight = 149
-      object MemoRetorno: TMemo
-        Left = 1
-        Top = 1
-        Width = 829
-        Height = 470
-        Align = alClient
-        ReadOnly = True
-        ScrollBars = ssVertical
-        TabOrder = 0
-        ExplicitLeft = 2
-        ExplicitTop = 2
-      end
-    end
-    object pnlTop: TPanel
-      Left = 1
-      Top = 1
-      Width = 831
-      Height = 45
-      Align = alTop
-      Caption = 'Atualiza'#231#227'o de Endere'#231'os'
-      Color = clActiveCaption
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -21
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentBackground = False
-      ParentFont = False
-      TabOrder = 1
-      ExplicitLeft = 2
-      ExplicitTop = 9
-    end
-    object pnlBotom: TPanel
-      Left = 1
-      Top = 518
-      Width = 831
-      Height = 45
-      Align = alBottom
-      BevelOuter = bvNone
-      TabOrder = 2
-      ExplicitLeft = 0
-      ExplicitTop = 194
-      ExplicitWidth = 528
-      DesignSize = (
-        831
-        45)
-      object btnFechar: TBitBtn
-        Left = 740
-        Top = 5
-        Width = 81
-        Height = 33
-        Action = actFechar
-        Anchors = [akRight, akBottom]
-        Caption = '&Fechar'
-        NumGlyphs = 2
-        TabOrder = 1
-      end
-      object BitBtn1: TBitBtn
-        Left = 653
-        Top = 5
-        Width = 81
-        Height = 33
-        Action = actConfirmar
-        Anchors = [akRight, akBottom]
-        Caption = '&Confirmar'
-        NumGlyphs = 2
-        TabOrder = 0
-      end
-    end
-  end
   object MainMenu: TMainMenu
     Left = 392
     Top = 8
@@ -135,10 +42,6 @@ object fMain: TfMain
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'
-      object Enderecos1: TMenuItem
-        Action = actEnderecos
-        Caption = '&Endere'#231'os'
-      end
       object PessoasporLote1: TMenuItem
         Caption = 'Pessoas por Lote'
         OnClick = PessoasporLote1Click
@@ -165,17 +68,14 @@ object fMain: TfMain
     end
     object actEnderecos: TAction
       Caption = '&Pedidos'
-      OnExecute = actEnderecosExecute
     end
     object actFechar: TAction
       Caption = '&Fechar'
       ImageIndex = 0
-      OnExecute = actFecharExecute
     end
     object actConfirmar: TAction
       Caption = '&Confirmar'
       ImageIndex = 9
-      OnExecute = actConfirmarExecute
     end
   end
   object ImageList: TImageList

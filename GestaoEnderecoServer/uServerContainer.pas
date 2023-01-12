@@ -11,12 +11,9 @@ type
     DSServer: TDSServer;
     DSServerClassPadrao: TDSServerClass;
     DSServerClassPessoa: TDSServerClass;
-    DSServerClassEndereco: TDSServerClass;
     procedure DSServerClassPadraoGetClass(DSServerClass: TDSServerClass;
       var PersistentClass: TPersistentClass);
     procedure DSServerClassPessoaGetClass(DSServerClass: TDSServerClass;
-      var PersistentClass: TPersistentClass);
-    procedure DSServerClassEnderecoGetClass(DSServerClass: TDSServerClass;
       var PersistentClass: TPersistentClass);
   private
     { Private declarations }
@@ -33,7 +30,7 @@ implementation
 {$R *.dfm}
 
 uses
-  sPadrao, sPessoa, sEndereco;
+  sPadrao, sPessoa;
 
 var
   FModule: TComponent;
@@ -54,12 +51,6 @@ destructor TdsServerContainer.Destroy;
 begin
   inherited;
   FDSServer := nil;
-end;
-
-procedure TdsServerContainer.DSServerClassEnderecoGetClass(
-  DSServerClass: TDSServerClass; var PersistentClass: TPersistentClass);
-begin
-  PersistentClass := sEndereco.Tendereco;
 end;
 
 procedure TdsServerContainer.DSServerClassPadraoGetClass(

@@ -1,4 +1,6 @@
 object dmEndereco: TdmEndereco
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
   Height = 188
   Width = 263
   object updEndereco: TFDQuery

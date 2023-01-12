@@ -11,7 +11,6 @@ uses
   sPadrao in 'methods\sPadrao.pas',
   sPessoa in 'methods\sPessoa.pas',
   dConexao in 'dao\dConexao.pas' {dmConexao: TDataModule},
-  sEndereco in 'methods\sEndereco.pas',
   dPessoa in 'dao\dPessoa.pas' {dmPessoa: TDataModule},
   dEndereco in 'dao\dEndereco.pas' {dmEndereco: TDataModule},
   hDataSetJSON in 'helper\hDataSetJSON.pas';
@@ -23,6 +22,5 @@ begin
     WebRequestHandler.WebModuleClass := WebModuleClass;
   Application.Initialize;
   Application.CreateForm(TfGuiServer, fGuiServer);
-  Application.CreateForm(TdmConexao, dmConexao);
   Application.Run;
 end.

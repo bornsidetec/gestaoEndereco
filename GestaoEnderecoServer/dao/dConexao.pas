@@ -7,7 +7,7 @@ uses
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
   Data.DB, FireDAC.Comp.Client, FireDAC.Phys.PG, FireDAC.Phys.PGDef,
-  FireDAC.Comp.UI, DateUtils;
+  FireDAC.Comp.UI;
 
 type
   TdmConexao = class(TDataModule)
@@ -15,16 +15,13 @@ type
     FDPhysPgDriverLink: TFDPhysPgDriverLink;
     FDGUIxWaitCursor: TFDGUIxWaitCursor;
     procedure DataModuleCreate(Sender: TObject);
+    procedure DataModuleDestroy(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
     procedure Conectar;
-    function JSONDateToDateTime(JSONDate: string): TDateTime;
   end;
-
-var
-  dmConexao: TdmConexao;
 
 implementation
 
@@ -32,7 +29,7 @@ implementation
 
 {$R *.dfm}
 
-{ TDataModule1 }
+{ TdmConexao }
 
 procedure TdmConexao.Conectar;
 var
@@ -90,24 +87,9 @@ begin
   Conectar;
 end;
 
-
-
-function TdmConexao.JSONDateToDateTime(JSONDate: string): TDateTime;
-var
-  Year, Month, Day,
-  Hour, Minute, Second, Millisecond: Word;
+procedure TdmConexao.DataModuleDestroy(Sender: TObject);
 begin
-
-  Year := StrToInt(Copy(JSONDate, 1, 4));
-  Month := StrToInt(Copy(JSONDate, 6, 2));
-  Day := StrToInt(Copy(JSONDate, 9, 2));
-  Hour := StrToIntDef(Copy(JSONDate, 12, 2), 0);
-  Minute := StrToIntDef(Copy(JSONDate, 15, 2), 0);
-  Second := StrToIntDef(Copy(JSONDate, 18, 2), 0);
-  Millisecond := Round(StrToFloatDef(Copy(JSONDate, 19, 4), 0));
-
-  Result := EncodeDateTime(Year, Month, Day, Hour, Minute, Second, Millisecond);
-
+  Conexao.Connected := False;
 end;
 
 end.

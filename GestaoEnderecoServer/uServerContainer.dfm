@@ -17,10 +17,4 @@ object dsServerContainer: TdsServerContainer
     Left = 200
     Top = 75
   end
-  object DSServerClassEndereco: TDSServerClass
-    OnGetClass = DSServerClassEnderecoGetClass
-    Server = DSServer
-    Left = 200
-    Top = 147
-  end
 end

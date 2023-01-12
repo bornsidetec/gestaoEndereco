@@ -33,7 +33,7 @@ object fPessoasLote: TfPessoasLote
     ParentBackground = False
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 519
+    ExplicitWidth = 511
   end
   object pnlBotom: TPanel
     Left = 0
@@ -43,13 +43,13 @@ object fPessoasLote: TfPessoasLote
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 140
-    ExplicitWidth = 519
+    ExplicitTop = 138
+    ExplicitWidth = 511
     DesignSize = (
       515
       45)
     object btnFechar: TBitBtn
-      Left = 415
+      Left = 411
       Top = 6
       Width = 81
       Height = 33
@@ -58,10 +58,10 @@ object fPessoasLote: TfPessoasLote
       Caption = '&Fechar'
       NumGlyphs = 2
       TabOrder = 1
-      ExplicitLeft = 431
+      ExplicitLeft = 407
     end
     object BitBtn1: TBitBtn
-      Left = 328
+      Left = 324
       Top = 6
       Width = 81
       Height = 33
@@ -70,7 +70,7 @@ object fPessoasLote: TfPessoasLote
       Caption = 'C&onfirmar'
       NumGlyphs = 2
       TabOrder = 0
-      ExplicitLeft = 344
+      ExplicitLeft = 320
     end
   end
   object pnlDados: TPanel
@@ -80,11 +80,11 @@ object fPessoasLote: TfPessoasLote
     Height = 94
     Align = alClient
     TabOrder = 2
-    ExplicitWidth = 519
-    ExplicitHeight = 95
+    ExplicitWidth = 511
+    ExplicitHeight = 93
     object btnBuscar: TBitBtn
-      Left = 431
-      Top = 12
+      Left = 423
+      Top = 18
       Width = 81
       Height = 33
       Action = actBuscar

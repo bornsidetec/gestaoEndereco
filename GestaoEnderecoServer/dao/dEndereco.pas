@@ -8,7 +8,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, System.JSON, REST.Types,
   REST.Client, Data.Bind.Components, Data.Bind.ObjectScope,
-  System.Generics.Collections;
+  System.Generics.Collections, dConexao;
 
 type
   TdmEndereco = class(TDataModule)
@@ -18,33 +18,42 @@ type
     RESTRequest: TRESTRequest;
     RESTResponse: TRESTResponse;
     delEndereco: TFDQuery;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure DataModuleDestroy(Sender: TObject);
   private
     { Private declarations }
+    dmConexao: TdmConexao;
   public
     { Public declarations }
     procedure AtualizarEndereco(iId: Integer; sCep: string; out sMsg: string);
     procedure CarregarEnderecos;
+    procedure CarregarEnderecosSemIntegracao;
+    procedure SetaConexao;
     function Inserir(jsonEndereco: TJSONObject; iId: integer; out sMsg: string): Boolean;
-
     function buscarViaCEP(sCep: string): TJSONObject;
   end;
-
-var
-  dmEndereco: TdmEndereco;
 
 implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
-
-uses dConexao;
 
 {$R *.dfm}
 
 { TdmEndereco }
 
 procedure TdmEndereco.AtualizarEndereco(iId: Integer; sCep: string; out sMsg: string);
+var
+  dmEndereco: TdmEndereco;
 begin
-  dmEndereco.Inserir(buscarViaCEP(sCep), iId, sMsg);
+
+  dmEndereco := TdmEndereco.Create(nil);
+
+  try
+    dmEndereco.Inserir(buscarViaCEP(sCep), iId, sMsg);
+  finally
+    FreeAndNil(dmEndereco);
+  end;
+
 end;
 
 function TdmEndereco.buscarViaCEP(sCep: string): TJSONObject;
@@ -71,6 +80,33 @@ begin
 
 end;
 
+procedure TdmEndereco.CarregarEnderecosSemIntegracao;
+begin
+
+  qryEndereco.SQL.Clear;
+  qryEndereco.SQL.Text :=
+    ' SELECT e.idendereco, e.dscep ' +
+    ' FROM Endereco e ' +
+    ' WHERE NOT EXISTS ' +
+    '   ( ' +
+    '   SELECT 1 ' +
+    '   FROM endereco_integracao ei ' +
+    '   WHERE ei.idendereco = e.idendereco ' +
+    '   ) ';
+  qryEndereco.Open;
+
+end;
+
+procedure TdmEndereco.DataModuleCreate(Sender: TObject);
+begin
+  dmConexao := TdmConexao.Create(nil);
+end;
+
+procedure TdmEndereco.DataModuleDestroy(Sender: TObject);
+begin
+  FreeAndNil(dmConexao);
+end;
+
 function TdmEndereco.Inserir(jsonEndereco: TJSONObject; iId: integer;
   out sMsg: string): Boolean;
 begin
@@ -82,12 +118,6 @@ begin
       Result := False;
       Exit;
     end;
-
-  delEndereco.SQL.Clear;
-  delEndereco.SQL.Text :=
-    ' DELETE FROM Endereco_Integracao ' +
-    ' WHERE idendereco = :id ';
-  delEndereco.ParamByName('id').AsInteger := iId;
 
   updEndereco.SQL.Clear;
   updEndereco.SQL.Text :=
@@ -105,7 +135,6 @@ begin
   dmConexao.Conexao.StartTransaction;
 
   try
-    delEndereco.ExecSQL;
     updEndereco.ExecSQL;
     dmConexao.Conexao.Commit;
     sMsg := 'Endereço inserido com sucesso!';
@@ -120,6 +149,13 @@ begin
 
   end;
 
+end;
+
+procedure TdmEndereco.SetaConexao;
+begin
+  qryEndereco.Connection := dmConexao.Conexao;
+  updEndereco.Connection := dmConexao.Conexao;
+  delEndereco.Connection := dmConexao.Conexao;
 end;
 
 end.

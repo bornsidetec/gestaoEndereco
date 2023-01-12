@@ -7,15 +7,19 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
   Datasnap.DBClient, Datasnap.Provider, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, System.JSON, hDataSetJSON, System.Generics.Collections;
+  FireDAC.Comp.Client, System.JSON, hDataSetJSON, System.Generics.Collections,
+  dConexao;
 
 type
   TdmPessoa = class(TDataModule)
     qryPessoa: TFDQuery;
     updPessoa: TFDQuery;
     updEndereco: TFDQuery;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure DataModuleDestroy(Sender: TObject);
   private
     { Private declarations }
+    dmConexao: TdmConexao;
   public
     { Public declarations }
     function CarregarPessoa(sId: String = ''): TJSONArray;
@@ -26,14 +30,9 @@ type
   end;
 
 
-var
-  dmPessoa: TdmPessoa;
-
 implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
-
-uses dConexao;
 
 {$R *.dfm}
 
@@ -108,6 +107,16 @@ begin
 
   Result := qryPessoa.DataSetToJSON;
 
+end;
+
+procedure TdmPessoa.DataModuleCreate(Sender: TObject);
+begin
+  dmConexao := TdmConexao.Create(nil);
+end;
+
+procedure TdmPessoa.DataModuleDestroy(Sender: TObject);
+begin
+  FreeAndNil(dmConexao);
 end;
 
 function TdmPessoa.Excluir(sId: string; out sMsg: string): Boolean;

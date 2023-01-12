@@ -124,7 +124,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="methods\sEndereco.pas"/>
         <DCCReference Include="dao\dPessoa.pas">
             <Form>dmPessoa</Form>
             <FormType>dfm</FormType>

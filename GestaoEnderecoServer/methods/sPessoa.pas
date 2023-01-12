@@ -27,12 +27,14 @@ uses dPessoa;
 
 function Tpessoa.acceptPessoa(jObject: TJSONObject): string;
 var
+  dmPessoa: TdmPessoa;
   sMsg: string;
 begin
 
+
+  dmPessoa := TdmPessoa.Create(nil);
+
   try
-    if not Assigned(dmPessoa) then
-      dmPessoa := TdmPessoa.Create(nil);
     dmPessoa.Inserir(jObject, sMsg);
     Result := sMsg;
   finally
@@ -43,12 +45,13 @@ end;
 
 function Tpessoa.acceptPessoasLote(jArray: TJSONArray): string;
 var
+  dmPessoa: TdmPessoa;
   sMsg: string;
 begin
 
+  dmPessoa := TdmPessoa.Create(nil);
+
   try
-    if not Assigned(dmPessoa) then
-      dmPessoa := TdmPessoa.Create(nil);
     dmPessoa.InserirLote(jArray, sMsg);
     Result := sMsg;
   finally
@@ -59,12 +62,13 @@ end;
 
 function Tpessoa.cancelPessoa(const Key: string): string;
 var
+  dmPessoa: TdmPessoa;
   sMsg: string;
 begin
 
+  dmPessoa := TdmPessoa.Create(nil);
+
   try
-    if not Assigned(dmPessoa) then
-      dmPessoa := TdmPessoa.Create(nil);
     dmPessoa.Excluir(Key, sMsg);
     Result := sMsg;
   finally
@@ -74,11 +78,13 @@ begin
 end;
 
 function Tpessoa.Pessoa(const Key: string): TJSONArray;
+var
+  dmPessoa: TdmPessoa;
 begin
 
+  dmPessoa := TdmPessoa.Create(nil);
+
   try
-    if not Assigned(dmPessoa) then
-      dmPessoa := TdmPessoa.Create(nil);
     Result := dmPessoa.CarregarPessoa(Key);
   finally
     FreeAndNil(dmPessoa);
@@ -88,12 +94,13 @@ end;
 
 function Tpessoa.updatePessoa(const Key: string; jObject: TJSONObject): string;
 var
+  dmPessoa: TdmPessoa;
   sMsg: string;
 begin
 
+  dmPessoa := TdmPessoa.Create(nil);
+
   try
-    if not Assigned(dmPessoa) then
-      dmPessoa := TdmPessoa.Create(nil);
     dmPessoa.Alterar(Key, jObject, sMsg);
     Result := sMsg;
   finally
