@@ -11,6 +11,37 @@ uses
   dConexao;
 
 type
+  TPessoa = class
+  private
+    Fid: Integer;
+    FFlNatureza: Integer;
+    FNmPrimeiro: string;
+    FNmSegundo: string;
+    FDsDocumento: string;
+    FDsCep: string;
+    procedure SetDsDocumento(const Value: string);
+    procedure SetNmPrimeiro(const Value: string);
+    procedure SetNmSegundo(const Value: string);
+    procedure SetDsCep(const Value: string);
+  public
+    property Id: Integer read Fid write Fid;
+    property FlNatureza: Integer read FFlNatureza write FFlNatureza;
+    property DsDocumento: string read FDsDocumento write SetDsDocumento;
+    property NmPrimeiro: string read FNmPrimeiro write SetNmPrimeiro;
+    property NmSegundo: string read FNmSegundo write SetNmSegundo;
+    property DsCep: string read FDsCep write SetDsCep;
+  end;
+
+  TPessoaEndereco = class
+  private
+    Fid: Integer;
+    FDsCep: string;
+    procedure SetDsCep(const Value: string);
+  public
+    property Id: Integer read Fid write Fid;
+    property DsCep: string read FDsCep write SetDsCep;
+  end;
+
   TdmPessoa = class(TDataModule)
     qryPessoa: TFDQuery;
     updPessoa: TFDQuery;
@@ -27,8 +58,9 @@ type
     function Alterar(sId: String; jsonPessoa: TJSONObject; out sMsg: string): Boolean;
     function Excluir(sId: String; out sMsg: string): Boolean;
     function InserirLote(jsonPessoa: TJSONArray; out sMsg: string): Boolean;
+    function InserirPessoa(lPessoa: TObjectList<TPessoa>; out sMsg: string; var lPessoaEndereco: TObjectList<TPessoaEndereco>): Boolean;
+    function InserirPessoaEndereco(lPessoaEndereco: TObjectList<TPessoaEndereco>; out sMsg: string): Boolean;
   end;
-
 
 implementation
 
@@ -191,70 +223,154 @@ end;
 function TdmPessoa.InserirLote(jsonPessoa: TJSONArray;
   out sMsg: string): Boolean;
 var
-  iIdPessoa, i: integer;
+  i: integer;
+  lPessoa: TObjectList<TPessoa>;
+  oPessoa: TPessoa;
+  lPessoaEndereco: TObjectList<TPessoaEndereco>;
 begin
 
-  updPessoa.SQL.Clear;
-  updEndereco.SQL.Clear;
 
-  dmConexao.Conexao.StartTransaction;
+  oPessoa := TPessoa.Create;
+  lPessoa := TObjectList<TPessoa>.Create(False);
+  lPessoaEndereco := TObjectList<TPessoaEndereco>.Create(False);
 
   try
-    qryPessoa.SQL.Text :=
-      ' SELECT LAST_VALUE AS idpessoa FROM pessoa_idpessoa_seq ';
-    qryPessoa.Open;
-
-    iIdPessoa := qryPessoa.Fields[0].AsInteger;
-
-    updPessoa.SQL.Text :=
-      ' INSERT INTO Pessoa ' +
-      ' (idpessoa, flnatureza, dsdocumento, nmprimeiro, nmsegundo, dtregistro) ' +
-      ' VALUES (:idpessoa, :flnatureza, :dsdocumento, :nmprimeiro, :nmsegundo, CURRENT_DATE); ';
-    updPessoa.Params.ArraySize := jsonPessoa.Count;
-
-    updEndereco.SQL.Text :=
-      ' INSERT INTO Endereco ' +
-      ' (idpessoa, dscep) ' +
-      ' VALUES (:idpessoa, :dscep) ';
-    updEndereco.Params.ArraySize := jsonPessoa.Count;
 
     for i := 0 to Pred(jsonPessoa.Count) do
     begin
+      lPessoa.Add(TPessoa.Create);
+      lPessoa[i].FlNatureza := jsonPessoa.Get(i).GetValue<integer>('flnatureza');
+      lPessoa[i].DsDocumento := jsonPessoa.Get(i).GetValue<string>('dsdocumento');
+      lPessoa[i].NmPrimeiro := jsonPessoa.Get(i).GetValue<string>('nmprimeiro');
+      lPessoa[i].NmSegundo := jsonPessoa.Get(i).GetValue<string>('nmsegundo');
+      lPessoa[i].DsCep := jsonPessoa.Get(i).GetValue<string>('dscep');
+    end;
 
-      inc(iIdPessoa);
+    dmConexao.Conexao.StartTransaction;
 
-      updPessoa.ParamByName('idpessoa').AsIntegers[i] := iIdPessoa;
-      updPessoa.ParamByName('flnatureza').AsIntegers[i] := jsonPessoa.Get(i).GetValue<integer>('flnatureza');
-      updPessoa.ParamByName('dsdocumento').AsStrings[i] := jsonPessoa.Get(i).GetValue<string>('dsdocumento');
-      updPessoa.ParamByName('nmprimeiro').AsStrings[i] := jsonPessoa.Get(i).GetValue<string>('nmprimeiro');
-      updPessoa.ParamByName('nmsegundo').AsStrings[i] := jsonPessoa.Get(i).GetValue<string>('nmsegundo');
+    if InserirPessoa(lPessoa, sMsg, lPessoaEndereco) then
+    begin
+      InserirPessoaEndereco(lPessoaEndereco, sMsg);
+      dmConexao.Conexao.Commit;
+    end
+    else
+    begin
+      dmConexao.Conexao.Rollback;
+      Result := False;
+    end;
 
-      updEndereco.ParamByName('idpessoa').AsIntegers[i] := iIdPessoa;
-      updEndereco.ParamByName('dscep').AsStrings[i] := jsonPessoa.Get(i).GetValue<string>('dscep');
+  finally
+    FreeAndNil(oPessoa);
+    lPessoa.Free;
+    lPessoaEndereco.Free;
+  end;
+
+end;
+
+function Tdmpessoa.InserirPessoa(lPessoa: TObjectList<TPessoa>; out sMsg: string; var lPessoaEndereco: TObjectList<TPessoaEndereco>): Boolean;
+var
+  i: integer;
+begin
+
+  try
+
+    for i := 0 to Pred(lPessoa.Count) do
+    begin
+
+      updPessoa.SQL.Clear;
+      updPessoa.SQL.Text :=
+        ' INSERT INTO Pessoa ' +
+        ' (flnatureza, dsdocumento, nmprimeiro, nmsegundo, dtregistro) ' +
+        ' VALUES (:flnatureza, :dsdocumento, :nmprimeiro, :nmsegundo, CURRENT_DATE) RETURNING idpessoa; ';
+
+      updPessoa.ParamByName('flnatureza').AsInteger := lPessoa.Items[i].FFlNatureza;
+      updPessoa.ParamByName('dsdocumento').AsString := lPessoa.Items[i].DsDocumento;
+      updPessoa.ParamByName('nmprimeiro').AsString := lPessoa.Items[i].NmPrimeiro;
+      updPessoa.ParamByName('nmsegundo').AsString := lPessoa.Items[i].NmSegundo;
+
+      updPessoa.Open;
+
+      lPessoaEndereco.Add(TPessoaEndereco.Create);
+      lPessoaEndereco[i].Id := updPessoa.FieldByName('idpessoa').AsInteger;
+      lPessoaEndereco[i].DsCep := lPessoa.Items[i].DsCep;
 
     end;
 
-    updPessoa.Execute(updPessoa.Params.ArraySize);
-    updEndereco.Execute(updEndereco.Params.ArraySize);
-
-    qryPessoa.SQL.Text :=
-      ' SELECT SETVAL(''pessoa_idpessoa_seq'', :idpessoa) ';
-    qryPessoa.ParamByName('idpessoa').AsInteger := iIdPessoa;
-    qryPessoa.Open;
-
-    dmConexao.Conexao.Commit;
+    Result := True;
     sMsg := 'Pessoas em lote inseridas com sucesso!';
+
+  except
+    on E: Exception do
+    begin
+      Result := False;
+      sMsg := 'Erro ao inserir Pessoas: ' + E.Message;
+    end;
+  end;
+
+end;
+
+function TdmPessoa.InserirPessoaEndereco(lPessoaEndereco: TObjectList<TPessoaEndereco>;
+  out sMsg: string): Boolean;
+var
+  i: integer;
+begin
+
+  updPessoa.SQL.Clear;
+  updPessoa.SQL.Text :=
+    ' INSERT INTO Endereco ' +
+    ' (idpessoa, dscep) ' +
+    ' VALUES (:idpessoa, :dscep); ';
+  updPessoa.Params.ArraySize := lPessoaEndereco.Count;
+
+  for i := 0 to Pred(lPessoaEndereco.Count) do
+  begin
+    updPessoa.ParamByName('idpessoa').AsIntegers[i] := lPessoaEndereco.Items[i].Id;
+    updPessoa.ParamByName('dscep').AsStrings[i] := lPessoaEndereco.Items[i].DsCep;
+  end;
+
+  try
+    updPessoa.Execute(updPessoa.Params.ArraySize);
+
+    sMsg := 'Pessoas_Enderecos em lote inseridos com sucesso!';
     Result := True;
   except
     on E: Exception do
     begin
-      dmConexao.Conexao.Rollback;
       sMsg := 'Erro ao inserir Pessoa: ' + E.Message;
       Result := False;
     end;
 
   end;
 
+end;
+
+{ TPessoa }
+
+procedure TPessoa.SetDsCep(const Value: string);
+begin
+  FDsCep := Value;
+end;
+
+procedure TPessoa.SetDsDocumento(const Value: string);
+begin
+  FDsDocumento := Value;
+end;
+
+procedure TPessoa.SetNmPrimeiro(const Value: string);
+begin
+  FNmPrimeiro := Value;
+end;
+
+procedure TPessoa.SetNmSegundo(const Value: string);
+begin
+  FNmSegundo := Value;
+end;
+
+{ TPessoaEndereco }
+
+procedure TPessoaEndereco.SetDsCep(const Value: string);
+begin
+  FDsCep := Value;
 end;
 
 end.
