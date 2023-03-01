@@ -46,6 +46,7 @@ type
     qryPessoa: TFDQuery;
     updPessoa: TFDQuery;
     updEndereco: TFDQuery;
+    updEnderecoIntegracao: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -100,10 +101,30 @@ begin
     updEndereco.SQL.Text :=
       ' UPDATE Endereco ' +
       ' SET dscep = :dscep ' +
-      ' WHERE IdPessoa = :id ';
+      ' WHERE IdPessoa = :id ' +
+      ' RETURNING idendereco ';
     updEndereco.ParamByName('id').AsInteger := iId;
     updEndereco.ParamByName('dscep').AsString := jsonPessoa.GetValue<string>('dscep');
-    updEndereco.ExecSQL;
+    updEndereco.Open;
+
+    if jsonPessoa.GetValue<string>('nmlogradouro') <> EmptyStr then
+    begin
+      updEnderecoIntegracao.SQL.Text :=
+        ' UPDATE Endereco_Integracao ' +
+        ' SET dsuf = :dsuf, ' +
+        '   nmcidade = :nmcidade, ' +
+        '   nmbairro = :nmbairro, ' +
+        '   nmlogradouro = :nmlogradouro, ' +
+        '   dscomplemento = :dscomplemento ' +
+        ' WHERE IdEndereco = :idendereco ';
+      updEnderecoIntegracao.ParamByName('idendereco').AsInteger := updEndereco.FieldByName('idendereco').AsInteger;
+      updEnderecoIntegracao.ParamByName('dsuf').AsString := jsonPessoa.GetValue<string>('dsuf');
+      updEnderecoIntegracao.ParamByName('nmcidade').AsString := jsonPessoa.GetValue<string>('nmcidade');
+      updEnderecoIntegracao.ParamByName('nmbairro').AsString := jsonPessoa.GetValue<string>('nmbairro');
+      updEnderecoIntegracao.ParamByName('nmlogradouro').AsString := jsonPessoa.GetValue<string>('nmlogradouro');
+      updEnderecoIntegracao.ParamByName('dscomplemento').AsString := jsonPessoa.GetValue<string>('dscomplemento');
+      updEnderecoIntegracao.ExecSQL;
+    end;
 
     dmConexao.Conexao.Commit;
     sMsg := 'Pessoa alterada com sucesso!';
@@ -124,9 +145,12 @@ function TdmPessoa.CarregarPessoa(sId: String = ''): TJSONArray;
 begin
 
   qryPessoa.SQL.Clear;
-  qryPessoa.SQL.Add('SELECT Pessoa.*, Endereco.dscep');
+  qryPessoa.SQL.Add('SELECT Pessoa.*, ');
+  qryPessoa.SQL.Add('Endereco.dscep, ');
+  qryPessoa.SQL.Add('Endereco_Integracao.*');
   qryPessoa.SQL.Add('FROM Pessoa');
   qryPessoa.SQL.Add('INNER JOIN Endereco ON Endereco.idpessoa = Pessoa.idpessoa');
+  qryPessoa.SQL.Add('INNER JOIN Endereco_Integracao ON Endereco_Integracao.idendereco = Endereco.idendereco');
 
   if not sId.IsEmpty then
   begin
@@ -205,6 +229,20 @@ begin
     updEndereco.ParamByName('dscep').AsString := jsonPessoa.GetValue<string>('dscep');
     updEndereco.ExecSQL;
 
+    if jsonPessoa.GetValue<string>('nmlogradouro') <> EmptyStr then
+    begin
+      updEnderecoIntegracao.SQL.Text :=
+        ' INSERT INTO Endereco_Integracao ' +
+        ' (idendereco, dsuf, nmcidade, nmbairro, nmlogradouro, dscomplemento) ' +
+        ' VALUES (currval(''endereco_idendereco_seq''), :dsuf, :nmcidade, :nmbairro, :nmlogradouro, :dscomplemento) ';
+      updEnderecoIntegracao.ParamByName('dsuf').AsString := jsonPessoa.GetValue<string>('dsuf');
+      updEnderecoIntegracao.ParamByName('nmcidade').AsString := jsonPessoa.GetValue<string>('nmcidade');
+      updEnderecoIntegracao.ParamByName('nmbairro').AsString := jsonPessoa.GetValue<string>('nmbairro');
+      updEnderecoIntegracao.ParamByName('nmlogradouro').AsString := jsonPessoa.GetValue<string>('nmlogradouro');
+      updEnderecoIntegracao.ParamByName('dscomplemento').AsString := jsonPessoa.GetValue<string>('dscomplemento');
+      updEnderecoIntegracao.ExecSQL;
+    end;
+
     dmConexao.Conexao.Commit;
     sMsg := 'Pessoa inserida com sucesso!';
     Result := True;
@@ -252,6 +290,7 @@ begin
     begin
       InserirPessoaEndereco(lPessoaEndereco, sMsg);
       dmConexao.Conexao.Commit;
+      Result := True;
     end
     else
     begin

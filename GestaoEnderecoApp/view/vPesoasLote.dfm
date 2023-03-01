@@ -3,8 +3,8 @@ object fPessoasLote: TfPessoasLote
   Top = 0
   BorderIcons = []
   BorderStyle = bsSingle
-  ClientHeight = 184
-  ClientWidth = 515
+  ClientHeight = 183
+  ClientWidth = 511
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object fPessoasLote: TfPessoasLote
   object pnlTop: TPanel
     Left = 0
     Top = 0
-    Width = 515
+    Width = 511
     Height = 45
     Align = alTop
     Caption = 'Cadastro de Pessoas em Lote'
@@ -33,23 +33,20 @@ object fPessoasLote: TfPessoasLote
     ParentBackground = False
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 511
   end
   object pnlBotom: TPanel
     Left = 0
-    Top = 139
-    Width = 515
+    Top = 138
+    Width = 511
     Height = 45
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 138
-    ExplicitWidth = 511
     DesignSize = (
-      515
+      511
       45)
     object btnFechar: TBitBtn
-      Left = 411
+      Left = 403
       Top = 6
       Width = 81
       Height = 33
@@ -61,7 +58,7 @@ object fPessoasLote: TfPessoasLote
       ExplicitLeft = 407
     end
     object BitBtn1: TBitBtn
-      Left = 324
+      Left = 316
       Top = 6
       Width = 81
       Height = 33
@@ -76,12 +73,10 @@ object fPessoasLote: TfPessoasLote
   object pnlDados: TPanel
     Left = 0
     Top = 45
-    Width = 515
-    Height = 94
+    Width = 511
+    Height = 93
     Align = alClient
     TabOrder = 2
-    ExplicitWidth = 511
-    ExplicitHeight = 93
     object btnBuscar: TBitBtn
       Left = 423
       Top = 18

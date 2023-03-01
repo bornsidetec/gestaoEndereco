@@ -50,6 +50,26 @@ object dmPessoa: TdmPessoa
       FieldName = 'dscep'
       Size = 8
     end
+    object cdsPessoadsuf: TWideStringField
+      FieldName = 'dsuf'
+      Size = 50
+    end
+    object cdsPessoanmcidade: TWideStringField
+      FieldName = 'nmcidade'
+      Size = 100
+    end
+    object cdsPessoanmbairro: TWideStringField
+      FieldName = 'nmbairro'
+      Size = 50
+    end
+    object cdsPessoanmlogradouro: TWideStringField
+      FieldName = 'nmlogradouro'
+      Size = 100
+    end
+    object cdsPessoadscomplemento: TWideStringField
+      FieldName = 'dscomplemento'
+      Size = 100
+    end
   end
   object memPessoa: TFDMemTable
     FetchOptions.AssignedValues = [evMode]

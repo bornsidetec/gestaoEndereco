@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vCadastro, Data.DB, System.ImageList,
   Vcl.ImgList, System.Actions, Vcl.ActnList, Vcl.Grids, Vcl.DBGrids,
   Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Buttons, Vcl.ExtCtrls,
-  cPessoa, mPessoa, dPessoa, hEdit, Vcl.Mask;
+  cPessoa, mPessoa, dPessoa, hEdit, Vcl.Mask, System.JSON, REST.Types,
+  REST.Client, Data.Bind.Components, Data.Bind.ObjectScope, System.UITypes;
 
 type
   TfPessoas = class(TfCadastro)
@@ -16,6 +17,14 @@ type
     edtPrimeiro: TLabeledEdit;
     edtSegundo: TLabeledEdit;
     edtCep: TLabeledEdit;
+    Label2: TLabel;
+    edtLogradouro: TLabeledEdit;
+    edtComplemento: TLabeledEdit;
+    edtBairro: TLabeledEdit;
+    edtCidade: TLabeledEdit;
+    cboEstado: TComboBox;
+    RESTRequest: TRESTRequest;
+    RESTClient: TRESTClient;
     procedure actPesquisarExecute(Sender: TObject);
     procedure actInserirExecute(Sender: TObject);
     procedure actDetalharExecute(Sender: TObject);
@@ -27,6 +36,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure edtNaturezaKeyPress(Sender: TObject; var Key: Char);
+    procedure edtCepExit(Sender: TObject);
   private
     { Private declarations }
     procedure Pesquisar;
@@ -37,6 +47,8 @@ type
     procedure Salvar;
     procedure Limpar;
     procedure HabilitarEdits(aAcao: TAcao);
+    function buscarViaCEP(sCep: string): TJSONObject;
+    procedure preecherCEP(jsonEndereco: TJSONObject);
   public
     { Public declarations }
   end;
@@ -113,6 +125,11 @@ begin
     oPessoa.NmPrimeiro := edtPrimeiro.Text;
     oPessoa.NmSegundo := edtSegundo.Text;
     oPessoa.DsCep := edtCep.Text;
+    oPessoa.DsUf := cboEstado.Text;
+    oPessoa.NmCidade := edtCidade.Text;
+    oPessoa.NmBairro := edtBairro.Text;
+    oPessoa.NmLogradouro := edtLogradouro.Text;
+    oPessoa.DsComplemento := edtComplemento.Text;
 
     if not oPessoaController.Alterar(oPessoa, sErro) then
       raise Exception.Create(sErro);
@@ -121,6 +138,18 @@ begin
     FreeAndNil(oPessoaController);
     FreeAndNil(oPessoa);
   end;
+
+end;
+
+function TfPessoas.buscarViaCEP(sCep: string): TJSONObject;
+const
+  sUrl: string = 'https://viacep.com.br/ws/';
+  sType: string = '/json';
+begin
+
+  RESTClient.BaseURL := sUrl + sCep + sType;
+  RESTRequest.Execute;
+  Result := RESTRequest.Response.JSONValue AS TJSONObject;
 
 end;
 
@@ -141,12 +170,24 @@ begin
     edtNatureza.Text := IntToStr(oPessoa.FlNatureza);
     edtDocumento.Text := oPessoa.DsDocumento;
     edtCEP.Text := oPessoa.DsCep;
+    edtLogradouro.Text := oPessoa.NmLogradouro;
+    edtComplemento.Text := oPessoa.DsComplemento;
+    edtBairro.Text := oPessoa.NmBairro;
+    edtCidade.Text := oPessoa.NmCidade;
+    cboEstado.Text := oPessoa.DsUf;
 
   finally
     FreeAndNil(oPessoaController);
     FreeAndNil(oPessoa);
   end;
 
+end;
+
+procedure TfPessoas.edtCepExit(Sender: TObject);
+begin
+  inherited;
+
+  preecherCEP(buscarViaCEP(edtCep.Text));
 end;
 
 procedure TfPessoas.edtNaturezaKeyPress(Sender: TObject; var Key: Char);
@@ -213,6 +254,11 @@ begin
         edtNatureza.ReadOnly := False;
         edtDocumento.ReadOnly := False;
         edtCep.ReadOnly := False;
+        edtLogradouro.ReadOnly := False;
+        edtComplemento.ReadOnly := False;
+        edtBairro.ReadOnly := False;
+        edtCidade.ReadOnly := False;
+        cboEstado.Enabled := True;
       end;
     acLista:
       begin
@@ -221,6 +267,11 @@ begin
         edtNatureza.ReadOnly := True;
         edtDocumento.ReadOnly := True;
         edtCep.ReadOnly := True;
+        edtLogradouro.ReadOnly := True;
+        edtComplemento.ReadOnly := True;
+        edtBairro.ReadOnly := True;
+        edtCidade.ReadOnly := True;
+        cboEstado.Enabled := False;
       end;
   end;
 
@@ -242,6 +293,11 @@ begin
     oPessoa.FlNatureza := StrToIntDef(edtNatureza.Text, 0);
     oPessoa.DsDocumento := edtDocumento.Text;
     oPessoa.DsCep := edtCep.Text;
+    oPessoa.DsUf := cboEstado.Text;
+    oPessoa.NmCidade := edtCidade.Text;
+    oPessoa.NmBairro := edtBairro.Text;
+    oPessoa.NmLogradouro := edtLogradouro.Text;
+    oPessoa.DsComplemento := edtComplemento.Text;
 
     if not oPessoaController.Inserir(oPessoa, sErro) then
       raise Exception.Create(sErro);
@@ -265,6 +321,11 @@ begin
         edtNatureza.Clear;
         edtDocumento.Clear;
         edtCep.Clear;
+        edtLogradouro.Clear;
+        edtComplemento.Clear;
+        edtBairro.Clear;
+        edtCidade.Clear;
+        cboEstado.ItemIndex := -1;
       end;
   end;
 
@@ -279,6 +340,19 @@ begin
     oPessoaController.Pesquisar(edtPesquisar.Text);
   finally
     FreeAndNil(oPessoaController);
+  end;
+end;
+
+procedure TfPessoas.preecherCEP(jsonEndereco: TJSONObject);
+begin
+  try
+    cboEstado.Text := jsonEndereco.getValue<string>('uf');
+    edtCidade.Text := jsonEndereco.getValue<string>('localidade');
+    edtBairro.Text := jsonEndereco.getValue<string>('bairro');
+    edtLogradouro.Text := jsonEndereco.getValue<string>('logradouro');
+    edtComplemento.Text := jsonEndereco.getValue<string>('complemento');
+  except on E: Exception do
+    MessageDlg('CEP não encontrado' + #13 + #13 + E.Message, mtInformation, [mbOK], 0);
   end;
 end;
 

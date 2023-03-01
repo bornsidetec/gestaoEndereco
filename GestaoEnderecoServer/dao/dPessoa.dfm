@@ -1,8 +1,8 @@
 object dmPessoa: TdmPessoa
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 85
-  Width = 238
+  Height = 87
+  Width = 339
   object qryPessoa: TFDQuery
     Connection = dmConexao.Conexao
     SQL.Strings = (
@@ -30,6 +30,13 @@ object dmPessoa: TdmPessoa
     SQL.Strings = (
       '')
     Left = 168
+    Top = 16
+  end
+  object updEnderecoIntegracao: TFDQuery
+    Connection = dmConexao.Conexao
+    SQL.Strings = (
+      '')
+    Left = 248
     Top = 16
   end
 end

@@ -25,6 +25,11 @@ type
     cdsPessoaflnatureza: TFloatField;
     cdsPessoadtregistro: TWideStringField;
     cdsPessoadscep: TWideStringField;
+    cdsPessoadsuf: TWideStringField;
+    cdsPessoanmcidade: TWideStringField;
+    cdsPessoanmbairro: TWideStringField;
+    cdsPessoanmlogradouro: TWideStringField;
+    cdsPessoadscomplemento: TWideStringField;
   private
     { Private declarations }
   public
@@ -66,6 +71,11 @@ begin
     jsonObj.AddPair('nmprimeiro', oPessoa.NmPrimeiro);
     jsonObj.AddPair('nmsegundo', oPessoa.NmSegundo);
     jsonObj.AddPair('dscep', oPessoa.DsCep);
+    jsonObj.AddPair('dsuf', oPessoa.DsUf);
+    jsonObj.AddPair('nmcidade', oPessoa.NmCidade);
+    jsonObj.AddPair('nmbairro', oPessoa.NmBairro);
+    jsonObj.AddPair('nmlogradouro', oPessoa.NmLogradouro);
+    jsonObj.AddPair('dscomplemento', oPessoa.DsComplemento);
 
     Result := dmRest.Requisicao(sMetodos, '/' + IntToStr(oPessoa.Id), sErro, jsonObj, rmPOST);
   finally
@@ -94,6 +104,12 @@ begin
       oPessoa.NmPrimeiro := dmRest.FDMemTable.FieldByName('nmprimeiro').AsString;
       oPessoa.NmSegundo := dmRest.FDMemTable.FieldByName('nmsegundo').AsString;
       oPessoa.DsCep := dmRest.FDMemTable.FieldByName('dscep').AsString;
+      oPessoa.DsUf := dmRest.FDMemTable.FieldByName('dsuf').AsString;
+      oPessoa.NmCidade := dmRest.FDMemTable.FieldByName('nmcidade').AsString;
+      oPessoa.NmBairro := dmRest.FDMemTable.FieldByName('nmbairro').AsString;
+      oPessoa.NmLogradouro := dmRest.FDMemTable.FieldByName('nmlogradouro').AsString;
+      oPessoa.DsComplemento := dmRest.FDMemTable.FieldByName('dscomplemento').AsString;
+
     end;
 
   finally
@@ -131,6 +147,11 @@ begin
     jsonObj.AddPair('nmprimeiro', oPessoa.NmPrimeiro);
     jsonObj.AddPair('nmsegundo', oPessoa.NmSegundo);
     jsonObj.AddPair('dscep', oPessoa.DsCep);
+    jsonObj.AddPair('dsuf', oPessoa.DsUf);
+    jsonObj.AddPair('nmcidade', oPessoa.NmCidade);
+    jsonObj.AddPair('nmbairro', oPessoa.NmBairro);
+    jsonObj.AddPair('nmlogradouro', oPessoa.NmLogradouro);
+    jsonObj.AddPair('dscomplemento', oPessoa.DsComplemento);
 
     Result := dmRest.Requisicao(sMetodos, EmptyStr, sErro, jsonObj, rmPUT);
   finally
